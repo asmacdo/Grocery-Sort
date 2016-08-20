@@ -8,14 +8,24 @@ print "master_list is: ", master_list
 def fix_master_list():
 	
 	count = 0
+	position = 0
 	while count <= len(checked_list):
 		if checked_list[count] in master_list:
+			position = master_list.index(checked_list[count])
 			count += 1
-		elif checked_list[count] not in master_list:
-			
+			return position
+		elif (checked_list[count] not in master_list) and (position != 0):
+			master_list.insert(position + 1, checked_list[count])
+			count +=1
+		elif (checked_list[count] not in master_list) and (position == 0):
+			master_list.insert(position, checked_list[count])
+		else:
+			print "There has been an unknown error"
 			
 	target = open("listsave.txt", "w")
 	target.write("\n".join(str(x) for x in master_list))
+	print master_list
+	quit()
 	
 ##	This function sorts todays items in the order the user checks them off,
 ##	and makes a new list, including new items from today.	
@@ -24,19 +34,20 @@ def check_items():
 
 	item = raw_input("Item checked: ")
 	
-	if item in todays_list:
-		todays_list.remove(item)
+	if item in todays_sorted_list:
+		todays_sorted_list.remove(item)
 		checked_list.append(item)
 		print item, "; check!"
+		check_items()
 		
 	else:
 		print "Item not on list"
 		
 	if len(todays_sorted_list) == 0:
 		print "Items were checked in this order: ", checked_list
-		##fix_master_list()
+		fix_master_list()
 	else:
-		check_items()
+		pass
 		
 	
 ##	This function will compare items from today's list to the master list,
@@ -78,4 +89,5 @@ def get_items():
 get_items()
 sort_todays_items()
 check_items()
+fix_master_list()
 print master_list
